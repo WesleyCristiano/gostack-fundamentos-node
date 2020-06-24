@@ -1,6 +1,7 @@
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import Transaction from '../models/Transaction';
 
+
 class CreateTransactionService {
   private transactionsRepository: TransactionsRepository;
 
@@ -8,8 +9,12 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
-  public execute(): Transaction {
-    // TODO
+  public execute({ title, value, type }: Omit<Transaction, 'id'>): Transaction {
+    if((type =='outcome') && (value> this.transactionsRepository.getBalance().total)){
+      throw Error('Desculpe, seu saldo é insuficiente')
+      }
+    const transaction = this.transactionsRepository.create({title, value, type})
+    return transaction
   }
 }
 
